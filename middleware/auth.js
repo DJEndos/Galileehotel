@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
 //   should only be accessible by logged-in admin
 // ============================================================
 
-const jwt = require('jsonwebtoken');
+
 
 module.exports = function requireAuth(req, res, next) {
   // Get token from Authorization header
