@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — Galilee Hotel</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏨</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+ 
+  <style>
+    /* ── Variables ── */
+    :root {
+      --gold:       #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-dark:  #9A7830;
+      --black:      #080808;
+      --charcoal:   #111111;
+      --dark:       #161616;
+      --panel:      #1C1C1C;
+      --border:     rgba(201,168,76,0.18);
+      --text:       rgba(255,255,255,0.85);
+      --muted:      rgba(255,255,255,0.4);
+      --error:      #FF5B5B;
+      --success:    #4CAF82;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Jost', sans-serif;
+      --transition:   0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+ 
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    /* ── Animated background ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-image {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=60');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.07;
+      transform: scale(1.05);
+      animation: bgDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes bgDrift {
+      from { transform: scale(1.05) translateX(0); }
+      to   { transform: scale(1.1) translateX(-2%); }
+    }
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .bg-radial {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+    }
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: orbFloat 15s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: var(--gold);
+      top: -200px; left: -200px;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: #2A4A35;
+      bottom: -150px; right: -150px;
+      animation-delay: -7s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(30px, -20px) scale(1.05); }
+      66%  { transform: translate(-20px, 30px) scale(0.95); }
+    }
+ 
+    /* ── Main card ── */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 460px;
+      padding: 1.5rem;
+      animation: cardReveal 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+ 
+    .login-card {
+      background: rgba(22,22,22,0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem 2.75rem;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 32px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(201,168,76,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    /* Gold top accent line */
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+ 
+    /* ── Logo area ── */
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: cardReveal 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .logo-ring {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--black);
+      box-shadow: 0 0 0 8px rgba(201,168,76,0.08), 0 8px 32px rgba(201,168,76,0.25);
+      position: relative;
+    }
+    .logo-ring::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.25);
+      animation: ringPulse 3s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.5; }
+    }
+    .login-logo h1 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .login-logo .tagline {
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-family: var(--font-body);
+    }
+ 
+    /* ── Admin badge ── */
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.75rem;
+    }
+    .admin-badge i { font-size: 0.8rem; }
+ 
+    /* ── Form ── */
+    .login-form {
+      animation: cardReveal 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.95rem;
+      transition: color var(--transition);
+      pointer-events: none;
+    }
+    .input-wrap input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: #fff;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+    .input-wrap input:focus {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.05);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+    .input-wrap input:focus + i,
+    .input-wrap:focus-within i { color: var(--gold); }
+ 
+    /* Password toggle */
+    .pw-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      padding: 4px;
+      transition: color var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pw-toggle:hover { color: var(--gold); }
+ 
+    /* ── Remember me ── */
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      gap: 1rem;
+    }
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .remember-me input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .remember-me span {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .forgot-link {
+      font-size: 0.82rem;
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity var(--transition);
+      white-space: nowrap;
+    }
+    .forgot-link:hover { opacity: 0.7; }
+ 
+    /* ── Submit button ── */
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    }
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .btn-login:hover::before { transform: translateX(0); }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,168,76,0.45);
+    }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .btn-login .btn-text { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-login.loading .btn-text { display: none; }
+    .btn-login.loading .spinner { display: block; margin: 0 auto; }
+ 
+    /* ── Alert messages ── */
+    .alert {
+      display: none;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .alert.show { display: flex; }
+    .alert-error {
+      background: rgba(255,91,91,0.1);
+      border: 1px solid rgba(255,91,91,0.25);
+      color: #FF8A8A;
+    }
+    .alert-success {
+      background: rgba(76,175,130,0.1);
+      border: 1px solid rgba(76,175,130,0.25);
+      color: #6DDFAB;
+    }
+ 
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.75rem 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+    }
+    .divider span {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+ 
+    /* ── Back to site link ── */
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition);
+      padding-top: 0.5rem;
+    }
+    .back-link:hover { color: var(--gold); }
+    .back-link i { font-size: 0.85rem; }
+ 
+    /* ── Security notice ── */
+    .security-notice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 2rem;
+      letter-spacing: 0.06em;
+    }
+    .security-notice i { color: var(--gold); font-size: 0.75rem; }
+ 
+    /* ── Input shake animation ── */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+ 
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .login-card { padding: 2.25rem 1.75rem; border-radius: 20px; }
+      .login-logo h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- Animated Background -->
+  <div class="bg">
+    <div class="bg-image"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-radial"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+ 
+  <!-- Login Card -->
+  <div class="login-wrapper">
+    <div class="login-card">
+ 
+      <!-- Logo -->
+      <div class="login-logo">
+        <div class="logo-ring">G</div>
+        <h1>Galilee Hotel</h1>
+        <div class="tagline">Where Comfort Meets Excellence</div>
+      </div>
+ 
+      <!-- Admin Badge -->
+      <div style="text-align:center;">
+        <div class="admin-badge">
+          <i class="bi bi-shield-lock-fill"></i>
+          Admin Portal
+        </div>
+      </div>
+ 
+      <!-- Alert Messages -->
+      <div class="alert alert-error" id="errorAlert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span id="errorMsg">Invalid email or password. Please try again.</span>
+      </div>
+      <div class="alert alert-success" id="successAlert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Login successful! Redirecting to dashboard...</span>
+      </div>
+ 
+      <!-- Form -->
+      <form class="login-form" id="loginForm" novalidate>
+ 
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="admin@galileehotel.com"
+              autocomplete="email"
+              required
+            />
+            <i class="bi bi-envelope-fill"></i>
+          </div>
+        </div>
+ 
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+            <i class="bi bi-lock-fill"></i>
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Toggle password visibility">
+              <i class="bi bi-eye-fill" id="pwIcon"></i>
+            </button>
+          </div>
+        </div>
+ 
+        <div class="form-footer">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+ 
+        <button type="submit" class="btn-login" id="loginBtn">
+          <div class="btn-text">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Sign In to Dashboard
+          </div>
+          <div class="spinner"></div>
+        </button>
+ 
+      </form>
+ 
+      <div class="divider"><span>Galilee Gardens Hotels Ltd</span></div>
+ 
+      <a href="index.html" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to Hotel Website
+      </a>
+ 
+    </div>
+ 
+    <!-- Security Notice -->
+    <div class="security-notice">
+      <i class="bi bi-shield-check"></i>
+      Secured with JWT Authentication · SSL Encrypted
+    </div>
+  </div>
+ 
+  <script>
+  // ── Configuration ────────────────────────────────────────────
+  const API_BASE = 'https://galileehotel.onrender.com'; // ← Replace with your Render URL
+ 
+  // ── Password visibility toggle ───────────────────────────────
+  const pwToggle = document.getElementById('pwToggle');
+  const pwInput  = document.getElementById('password');
+  const pwIcon   = document.getElementById('pwIcon');
+ 
+  pwToggle.addEventListener('click', () => {
+    const isText = pwInput.type === 'text';
+    pwInput.type = isText ? 'password' : 'text';
+    pwIcon.className = isText ? 'bi bi-eye-fill' : 'bi bi-eye-slash-fill';
+  });
+ 
+  // ── Show/hide alerts ──────────────────────────────────────────
+  function showError(msg) {
+    document.getElementById('successAlert').classList.remove('show');
+    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('errorAlert').classList.add('show');
+  }
+ 
+  function showSuccess() {
+    document.getElementById('errorAlert').classList.remove('show');
+    document.getElementById('successAlert').classList.add('show');
+  }
+ 
+  function hideAlerts() {
+    document.getElementById('errorAlert').classList.remove('show');
+    document.getElementById('successAlert').classList.remove('show');
+  }
+ 
+  // ── Set loading state ─────────────────────────────────────────
+  function setLoading(state) {
+    const btn = document.getElementById('loginBtn');
+    btn.classList.toggle('loading', state);
+  }
+ 
+  // ── Shake animation on error ──────────────────────────────────
+  function shakeCard() {
+    const card = document.querySelector('.login-card');
+    card.classList.remove('shake');
+    void card.offsetWidth; // reflow
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 500);
+  }
+ 
+  // ── Remember me ───────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('galilee_admin_email');
+    if (saved) {
+      document.getElementById('email').value = saved;
+      document.getElementById('rememberMe').checked = true;
+    }
+  });
+ 
+  // ── Form submit ───────────────────────────────────────────────
+  document.getElementById('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideAlerts();
+ 
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const remember = document.getElementById('rememberMe').checked;
+ 
+    // Basic validation
+    if (!email || !password) {
+      showError('Please enter your email and password.');
+      shakeCard();
+      return;
+    }
+ 
+    setLoading(true);
+ 
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+ 
+      const data = await response.json();
+ 
+      if (response.ok && data.token) {
+        // Save token and email
+        localStorage.setItem('galilee_admin_token', data.token);
+        localStorage.setItem('galilee_admin_name', data.name || 'Admin');
+ 
+        if (remember) {
+          localStorage.setItem('galilee_admin_email', email);
+        } else {
+          localStorage.removeItem('galilee_admin_email');
+        }
+ 
+        showSuccess();
+ 
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          window.location.href = 'admin-dashboard.html';
+        }, 1200);
+ 
+      } else {
+        setLoading(false);
+        showError(data.message || 'Invalid email or password. Please try again.');
+        shakeCard();
+      }
+ 
+    } catch (err) {
+      setLoading(false);
+      showError('Connection error. Please check your internet and try again.');
+      shakeCard();
+      console.error('Login error:', err);
+    }
+  });
+ 
+  // ── Hide error when user starts typing ────────────────────────
+  ['email','password'].forEach(id => {
+    document.getElementById(id).addEventListener('input', hideAlerts);
+  });
+ 
+  // ── Redirect if already logged in ────────────────────────────
+  if (localStorage.getItem('galilee_admin_token')) {
+    window.location.href = 'admin-dashboard.html';
+  }
+  </script>
+</body>
+</html>
+ 

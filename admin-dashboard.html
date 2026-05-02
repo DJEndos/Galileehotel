@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Galilee Hotel</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Jost:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    :root {
+      --gold:       #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-dark:  #9A7830;
+      --bg:         #0D0D0D;
+      --sidebar:    #111111;
+      --panel:      #161616;
+      --card:       #1C1C1C;
+      --border:     rgba(255,255,255,0.06);
+      --border-gold:rgba(201,168,76,0.2);
+      --text:       rgba(255,255,255,0.88);
+      --muted:      rgba(255,255,255,0.4);
+      --success:    #4CAF82;
+      --warning:    #F59E0B;
+      --danger:     #EF4444;
+      --info:       #3B82F6;
+      --font-display:'Playfair Display', Georgia, serif;
+      --font-body:   'Jost', sans-serif;
+      --sidebar-w:   260px;
+      --transition:  0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 1.75rem 1.5rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-circle {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .logo-text .name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .logo-text .sub {
+      font-size: 0.6rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .sidebar-nav {
+      flex: 1;
+      padding: 1.25rem 0.75rem;
+    }
+    .nav-section-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.5rem 0.75rem;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-bottom: 2px;
+      position: relative;
+    }
+    .nav-item i { font-size: 1rem; width: 20px; text-align: center; }
+    .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .nav-item.active {
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      border: 1px solid var(--border-gold);
+    }
+    .nav-item .badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: #000;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      min-width: 20px;
+      text-align: center;
+    }
+    .sidebar-footer {
+      padding: 1rem 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      margin-bottom: 0.75rem;
+    }
+    .admin-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .admin-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 0.7rem; color: var(--gold); }
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.7rem;
+      border-radius: 10px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      color: #EF4444;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.15); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 68px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .page-subtitle { font-size: 0.78rem; color: var(--muted); }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .topbar-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      font-size: 1rem;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .topbar-btn:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+    .notif-dot {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 7px; height: 7px;
+      background: var(--gold);
+      border-radius: 50%;
+      border: 1.5px solid var(--panel);
+    }
+    .hamburger-topbar {
+      display: none;
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      align-items: center; justify-content: center;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 2rem;
+      flex: 1;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .stat-card.gold::before   { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+    .stat-card.green::before  { background: linear-gradient(90deg, var(--success), #6EE7B7); }
+    .stat-card.blue::before   { background: linear-gradient(90deg, var(--info), #93C5FD); }
+    .stat-card.orange::before { background: linear-gradient(90deg, var(--warning), #FDE68A); }
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .stat-icon.gold   { background: rgba(201,168,76,0.12); color: var(--gold); }
+    .stat-icon.green  { background: rgba(76,175,130,0.12); color: var(--success); }
+    .stat-icon.blue   { background: rgba(59,130,246,0.12); color: var(--info); }
+    .stat-icon.orange { background: rgba(245,158,11,0.12); color: var(--warning); }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
+    .stat-change {
+      font-size: 0.72rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .stat-change.up   { color: var(--success); }
+    .stat-change.down { color: var(--danger); }
+
+    /* ── GRID LAYOUT ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+    }
+
+    /* ── SECTION CARDS ── */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .section-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-card-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-card-title i { color: var(--gold); }
+    .section-card-body { padding: 1.5rem; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    thead th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      transition: background var(--transition);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody td {
+      padding: 1rem;
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .td-name { font-weight: 600; color: #fff; }
+    .td-sub  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .badge-pending  { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+    .badge-confirmed{ background: rgba(76,175,130,0.12); color: var(--success); border: 1px solid rgba(76,175,130,0.2); }
+    .badge-cancelled{ background: rgba(239,68,68,0.12);  color: var(--danger);  border: 1px solid rgba(239,68,68,0.2); }
+    .badge-paid     { background: rgba(201,168,76,0.12); color: var(--gold);    border: 1px solid var(--border-gold); }
+
+    /* ── ACTION BUTTONS ── */
+    .action-btns { display: flex; gap: 0.4rem; }
+    .btn-action {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem;
+      transition: all var(--transition);
+    }
+    .btn-confirm { background: rgba(76,175,130,0.1);  color: var(--success); border: 1px solid rgba(76,175,130,0.2); }
+    .btn-cancel  { background: rgba(239,68,68,0.1);   color: var(--danger);  border: 1px solid rgba(239,68,68,0.2); }
+    .btn-view    { background: rgba(201,168,76,0.1);  color: var(--gold);    border: 1px solid var(--border-gold); }
+    .btn-action:hover { transform: scale(1.1); filter: brightness(1.2); }
+
+    /* ── RECENT ACTIVITY ── */
+    .activity-item {
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .activity-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .activity-text { font-size: 0.83rem; color: var(--text); line-height: 1.5; }
+    .activity-time { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── ROOM OCCUPANCY ── */
+    .room-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .room-item:last-child { border-bottom: none; }
+    .room-info { display: flex; align-items: center; gap: 0.75rem; }
+    .room-dot  {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .room-name  { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .room-price { font-size: 0.72rem; color: var(--muted); }
+    .room-status { font-size: 0.78rem; font-weight: 600; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    }
+
+    /* ── SEARCH & FILTER ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-box i { color: var(--muted); font-size: 0.9rem; }
+    .search-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .filter-select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+    }
+    .filter-select option { background: var(--card); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      transition: all var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #000;
+      box-shadow: 0 4px 15px rgba(201,168,76,0.25);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,168,76,0.35); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 90%;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal { transform: scale(1); }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: #fff;
+    }
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .modal-close:hover { color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    .modal-field {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .field-item label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+    .field-item p {
+      font-size: 0.9rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .btn-confirm-modal {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 10px;
+      background: rgba(76,175,130,0.1);
+      border: 1px solid rgba(76,175,130,0.3);
+      color: var(--success);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-confirm-modal:hover { background: rgba(76,175,130,0.2); }
+    .btn-cancel-modal {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 10px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--danger);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-cancel-modal:hover { background: rgba(239,68,68,0.2); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      z-index: 999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.35s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      min-width: 280px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+    .toast i { font-size: 1.1rem; }
+    .toast.success i { color: var(--success); }
+    .toast.error   i { color: var(--danger); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    .empty-state i { font-size: 3rem; color: var(--border-gold); margin-bottom: 1rem; display: block; }
+    .empty-state h3 { font-family: var(--font-display); font-size: 1.2rem; color: rgba(255,255,255,0.3); margin-bottom: 0.5rem; }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* ── LOADING ── */
+    .loading-row td {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MESSAGES PAGE ── */
+    .message-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: background var(--transition);
+    }
+    .message-card:hover { background: rgba(255,255,255,0.04); }
+    .message-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .message-name { font-weight: 600; color: #fff; font-size: 0.95rem; }
+    .message-time { font-size: 0.72rem; color: var(--muted); }
+    .message-subject { font-size: 0.78rem; color: var(--gold); margin-bottom: 0.5rem; }
+    .message-body { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .message-contact { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .message-contact a { font-size: 0.78rem; color: var(--gold); display: flex; align-items: center; gap: 0.3rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .hamburger-topbar { display: flex; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .content { padding: 1.25rem; }
+      .topbar { padding: 0 1.25rem; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .modal-field { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-circle">G</div>
+    <div class="logo-text">
+      <div class="name">Galilee Hotel</div>
+      <div class="sub">Admin Portal</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <div class="nav-item active" data-page="dashboard">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </div>
+    <div class="nav-item" data-page="bookings">
+      <i class="bi bi-calendar-check-fill"></i> Bookings
+      <span class="badge" id="pending-badge">0</span>
+    </div>
+    <div class="nav-item" data-page="messages">
+      <i class="bi bi-chat-dots-fill"></i> Messages
+      <span class="badge" id="msg-badge">0</span>
+    </div>
+
+    <div class="nav-section-label">Hotel</div>
+    <div class="nav-item" data-page="rooms">
+      <i class="bi bi-house-fill"></i> Rooms Overview
+    </div>
+
+    <div class="nav-section-label">Account</div>
+    <div class="nav-item" onclick="window.open('index.html','_blank')">
+      <i class="bi bi-globe"></i> View Website
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-info">
+      <div class="admin-avatar" id="admin-avatar">A</div>
+      <div>
+        <div class="admin-name" id="admin-name-display">Admin</div>
+        <div class="admin-role">Hotel Administrator</div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">
+      <i class="bi bi-box-arrow-left"></i> Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger-topbar topbar-btn" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <div class="page-title" id="topbar-title">Dashboard</div>
+        <div class="page-subtitle" id="topbar-sub">Welcome back</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Refresh" onclick="loadAllData()">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+      <a href="pages/booking.html" target="_blank" class="topbar-btn" title="New Booking">
+        <i class="bi bi-plus-lg"></i>
+      </a>
+      <button class="topbar-btn" title="Notifications">
+        <i class="bi bi-bell-fill"></i>
+        <span class="notif-dot"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ═══ DASHBOARD PAGE ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card gold">
+          <div class="stat-icon gold"><i class="bi bi-calendar-check-fill"></i></div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total Bookings</div>
+          <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> All time</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="stat-value" id="stat-confirmed">—</div>
+          <div class="stat-label">Confirmed</div>
+          <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> Active stays</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-change"><i class="bi bi-dot"></i> Needs action</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon blue"><i class="bi bi-currency-exchange"></i></div>
+          <div class="stat-value" id="stat-revenue">—</div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> Paid bookings</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Recent Bookings -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">
+              <i class="bi bi-clock-history"></i> Recent Bookings
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="navigate('bookings')" style="font-size:0.75rem;padding:0.4rem 0.85rem;">
+              View All
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Check-in</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recent-bookings-tbody">
+                <tr class="loading-row">
+                  <td colspan="6">
+                    <div class="spinner"></div>
+                    Loading bookings...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <!-- Room Status -->
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">
+                <i class="bi bi-house-fill"></i> Room Status
+              </div>
+            </div>
+            <div class="section-card-body">
+              <div class="room-item">
+                <div class="room-info">
+                  <div class="room-dot" style="background:#4CAF82;"></div>
+                  <div>
+                    <div class="room-name">Standard Room</div>
+                    <div class="room-price">₦35,000/night</div>
+                  </div>
+                </div>
+                <div class="room-status" style="color:#4CAF82;">Available</div>
+              </div>
+              <div class="room-item">
+                <div class="room-info">
+                  <div class="room-dot" style="background:var(--gold);"></div>
+                  <div>
+                    <div class="room-name">Deluxe Room</div>
+                    <div class="room-price">₦55,000/night</div>
+                  </div>
+                </div>
+                <div class="room-status" style="color:var(--gold);">Occupied</div>
+              </div>
+              <div class="room-item">
+                <div class="room-info">
+                  <div class="room-dot" style="background:#4CAF82;"></div>
+                  <div>
+                    <div class="room-name">Executive Suite</div>
+                    <div class="room-price">₦95,000/night</div>
+                  </div>
+                </div>
+                <div class="room-status" style="color:#4CAF82;">Available</div>
+              </div>
+              <div class="room-item">
+                <div class="room-info">
+                  <div class="room-dot" style="background:#EF4444;"></div>
+                  <div>
+                    <div class="room-name">Presidential Suite</div>
+                    <div class="room-price">₦185,000/night</div>
+                  </div>
+                </div>
+                <div class="room-status" style="color:#EF4444;">Reserved</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">
+                <i class="bi bi-lightning-fill"></i> Quick Actions
+              </div>
+            </div>
+            <div class="section-card-body" style="display:flex;flex-direction:column;gap:0.75rem;">
+              <a href="pages/booking.html" target="_blank" class="btn btn-gold" style="justify-content:center;">
+                <i class="bi bi-plus-circle-fill"></i> New Booking
+              </a>
+              <button class="btn btn-outline" style="justify-content:center;" onclick="navigate('bookings')">
+                <i class="bi bi-calendar-check"></i> Manage Bookings
+              </button>
+              <button class="btn btn-outline" style="justify-content:center;" onclick="navigate('messages')">
+                <i class="bi bi-chat-dots"></i> View Messages
+              </button>
+              <a href="https://cloud.mongodb.com" target="_blank" class="btn btn-outline" style="justify-content:center;">
+                <i class="bi bi-database"></i> MongoDB Atlas
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BOOKINGS PAGE ═══ -->
+    <div class="page" id="page-bookings">
+      <div class="toolbar">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" id="booking-search" placeholder="Search by name, email, room..." />
+        </div>
+        <select class="filter-select" id="booking-filter">
+          <option value="all">All Bookings</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-gold" onclick="loadBookings()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+      <div class="section-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Guests</th>
+                <th>Amount</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="all-bookings-tbody">
+              <tr class="loading-row">
+                <td colspan="9">
+                  <div class="spinner"></div>
+                  Loading bookings...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MESSAGES PAGE ═══ -->
+    <div class="page" id="page-messages">
+      <div class="toolbar">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" id="msg-search" placeholder="Search messages..." />
+        </div>
+        <button class="btn btn-gold" onclick="loadMessages()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+      <div id="messages-container">
+        <div class="empty-state">
+          <div class="spinner"></div>
+          <p>Loading messages...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ROOMS PAGE ═══ -->
+    <div class="page" id="page-rooms">
+      <div class="stats-row">
+        <div class="stat-card gold">
+          <div class="stat-icon gold"><i class="bi bi-house-fill"></i></div>
+          <div class="stat-value">4</div>
+          <div class="stat-label">Room Categories</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">Available</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon orange"><i class="bi bi-person-fill"></i></div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">Occupied</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon blue"><i class="bi bi-bookmark-fill"></i></div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">Reserved</div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title"><i class="bi bi-house-fill"></i> All Room Categories</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Room Type</th>
+                <th>Price/Night</th>
+                <th>Max Guests</th>
+                <th>Amenities</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="td-name">Standard Room</div></td>
+                <td style="color:var(--gold);font-weight:700;">₦35,000</td>
+                <td>2</td>
+                <td><span class="badge badge-paid">WiFi · AC · TV · Breakfast</span></td>
+                <td><span class="badge badge-confirmed">Available</span></td>
+                <td><a href="pages/booking.html?room=standard" target="_blank" class="btn btn-outline" style="font-size:0.75rem;padding:0.35rem 0.75rem;">Book</a></td>
+              </tr>
+              <tr>
+                <td><div class="td-name">Deluxe Room</div></td>
+                <td style="color:var(--gold);font-weight:700;">₦55,000</td>
+                <td>2</td>
+                <td><span class="badge badge-paid">WiFi · AC · TV · Bathtub</span></td>
+                <td><span class="badge badge-pending">Occupied</span></td>
+                <td><a href="pages/booking.html?room=deluxe" target="_blank" class="btn btn-outline" style="font-size:0.75rem;padding:0.35rem 0.75rem;">Book</a></td>
+              </tr>
+              <tr>
+                <td><div class="td-name">Executive Suite</div></td>
+                <td style="color:var(--gold);font-weight:700;">₦95,000</td>
+                <td>3</td>
+                <td><span class="badge badge-paid">WiFi · Jacuzzi · All Meals</span></td>
+                <td><span class="badge badge-confirmed">Available</span></td>
+                <td><a href="pages/booking.html?room=executive" target="_blank" class="btn btn-outline" style="font-size:0.75rem;padding:0.35rem 0.75rem;">Book</a></td>
+              </tr>
+              <tr>
+                <td><div class="td-name">Presidential Suite</div></td>
+                <td style="color:var(--gold);font-weight:700;">₦185,000</td>
+                <td>4</td>
+                <td><span class="badge badge-paid">Butler · Private Dining · Spa</span></td>
+                <td><span class="badge badge-cancelled">Reserved</span></td>
+                <td><a href="pages/booking.html?room=presidential" target="_blank" class="btn btn-outline" style="font-size:0.75rem;padding:0.35rem 0.75rem;">Book</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Booking Detail Modal -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Booking Details</div>
+      <button class="modal-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="bi bi-check-circle-fill"></i>
+  <span id="toast-msg">Action completed</span>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const API_BASE = 'https://galileehotel.onrender.com'; // ← Replace with your Render URL
+
+// ── Auth Guard ────────────────────────────────────────────────
+const token     = localStorage.getItem('galilee_admin_token');
+const adminName = localStorage.getItem('galilee_admin_name') || 'Admin';
+
+if (!token) {
+  window.location.href = 'admin-login.html';
+}
+
+// Set admin name display
+document.getElementById('admin-name-display').textContent = adminName;
+document.getElementById('admin-avatar').textContent = adminName.charAt(0).toUpperCase();
+document.getElementById('topbar-sub').textContent = `Welcome back, ${adminName}`;
+
+// ── Navigation ────────────────────────────────────────────────
+const pageTitles = {
+  dashboard: ['Dashboard',       'Overview of hotel activity'],
+  bookings:  ['Bookings',        'Manage all reservations'],
+  messages:  ['Messages',        'Guest contact messages'],
+  rooms:     ['Rooms Overview',  'Room categories and status']
+};
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`[data-page="${page}"]`).classList.add('active');
+  const [title, sub] = pageTitles[page];
+  document.getElementById('topbar-title').textContent = title;
+  document.getElementById('topbar-sub').textContent   = sub;
+
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  if (page === 'bookings') loadBookings();
+  if (page === 'messages') loadMessages();
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', () => navigate(item.dataset.page));
+});
+
+// ── Sidebar toggle (mobile) ───────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ── API Helper ────────────────────────────────────────────────
+async function apiFetch(endpoint, options = {}) {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers
+    }
+  });
+  if (res.status === 401) { logout(); return null; }
+  return res.json();
+}
+
+// ── Toast ──────────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  const icon  = toast.querySelector('i');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.className = `toast ${type} show`;
+  icon.className  = type === 'success' ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill';
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ── Format helpers ────────────────────────────────────────────
+function formatDate(d)  { return d ? new Date(d).toLocaleDateString('en-NG', { day:'numeric', month:'short', year:'numeric' }) : '—'; }
+function formatNaira(n) { return n ? '₦' + Number(n).toLocaleString('en-NG') : '—'; }
+function timeAgo(d) {
+  const s = Math.floor((Date.now() - new Date(d)) / 1000);
+  if (s < 60)   return 'Just now';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400)return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+function statusBadge(s) {
+  const map = { pending:'badge-pending', confirmed:'badge-confirmed', cancelled:'badge-cancelled' };
+  return `<span class="badge ${map[s] || 'badge-pending'}">${s || 'pending'}</span>`;
+}
+function paymentBadge(s) {
+  return s === 'paid'
+    ? `<span class="badge badge-paid"><i class="bi bi-check-circle-fill"></i> Paid</span>`
+    : `<span class="badge badge-pending">${s || 'pending'}</span>`;
+}
+
+// ── Load Dashboard Stats ──────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const data = await apiFetch('/bookings');
+    if (!data) return;
+
+    const bookings  = data.bookings || [];
+    const total     = bookings.length;
+    const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+    const pending   = bookings.filter(b => b.status === 'pending').length;
+    const revenue   = bookings
+      .filter(b => b.paymentStatus === 'paid')
+      .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+
+    document.getElementById('stat-total').textContent     = total;
+    document.getElementById('stat-confirmed').textContent = confirmed;
+    document.getElementById('stat-pending').textContent   = pending;
+    document.getElementById('stat-revenue').textContent   = revenue >= 1000000
+      ? '₦' + (revenue/1000000).toFixed(1) + 'M'
+      : formatNaira(revenue);
+
+    // Update badges
+    document.getElementById('pending-badge').textContent = pending;
+
+    // Recent bookings table (last 5)
+    const recent = bookings.slice(0, 5);
+    const tbody  = document.getElementById('recent-bookings-tbody');
+
+    if (!recent.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted);">No bookings yet</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = recent.map(b => `
+      <tr>
+        <td>
+          <div class="td-name">${b.fullName || '—'}</div>
+          <div class="td-sub">${b.email || ''}</div>
+        </td>
+        <td style="text-transform:capitalize;">${b.roomType || '—'}</td>
+        <td>${formatDate(b.checkin)}</td>
+        <td style="color:var(--gold);font-weight:600;">${formatNaira(b.totalAmount)}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action btn-view" onclick="viewBooking('${b._id}')" title="View"><i class="bi bi-eye-fill"></i></button>
+            <button class="btn-action btn-confirm" onclick="updateBookingStatus('${b._id}','confirmed')" title="Confirm"><i class="bi bi-check-lg"></i></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+  }
+}
+
+// ── Load All Bookings ─────────────────────────────────────────
+let allBookings = [];
+
+async function loadBookings() {
+  const tbody = document.getElementById('all-bookings-tbody');
+  tbody.innerHTML = `<tr class="loading-row"><td colspan="9"><div class="spinner"></div>Loading...</td></tr>`;
+
+  try {
+    const data = await apiFetch('/bookings');
+    if (!data) return;
+    allBookings = data.bookings || [];
+    renderBookings(allBookings);
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--danger);">Failed to load bookings</td></tr>`;
+  }
+}
+
+function renderBookings(bookings) {
+  const tbody = document.getElementById('all-bookings-tbody');
+
+  if (!bookings.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--muted);">No bookings found</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = bookings.map(b => `
+    <tr>
+      <td>
+        <div class="td-name">${b.fullName || '—'}</div>
+        <div class="td-sub">${b.email || ''}</div>
+        <div class="td-sub"><i class="bi bi-telephone-fill" style="color:var(--gold);font-size:0.65rem;"></i> ${b.phone || ''}</div>
+      </td>
+      <td style="text-transform:capitalize;font-weight:600;">${b.roomType || '—'}</td>
+      <td>${formatDate(b.checkin)}</td>
+      <td>${formatDate(b.checkout)}</td>
+      <td style="text-align:center;">${b.guests || '—'}</td>
+      <td style="color:var(--gold);font-weight:700;">${formatNaira(b.totalAmount)}</td>
+      <td>${paymentBadge(b.paymentStatus)}</td>
+      <td>${statusBadge(b.status)}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-action btn-view"    onclick="viewBooking('${b._id}')"                      title="View Details"><i class="bi bi-eye-fill"></i></button>
+          <button class="btn-action btn-confirm" onclick="updateBookingStatus('${b._id}','confirmed')"  title="Confirm"><i class="bi bi-check-lg"></i></button>
+          <button class="btn-action btn-cancel"  onclick="updateBookingStatus('${b._id}','cancelled')"  title="Cancel"><i class="bi bi-x-lg"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// Search & filter
+document.getElementById('booking-search').addEventListener('input', function () {
+  const q = this.value.toLowerCase();
+  const filtered = allBookings.filter(b =>
+    (b.fullName  || '').toLowerCase().includes(q) ||
+    (b.email     || '').toLowerCase().includes(q) ||
+    (b.roomType  || '').toLowerCase().includes(q) ||
+    (b.phone     || '').toLowerCase().includes(q)
+  );
+  renderBookings(filtered);
+});
+
+document.getElementById('booking-filter').addEventListener('change', function () {
+  const val = this.value;
+  const filtered = val === 'all' ? allBookings : allBookings.filter(b => b.status === val);
+  renderBookings(filtered);
+});
+
+// ── View Booking Detail ───────────────────────────────────────
+function viewBooking(id) {
+  const b = allBookings.find(x => x._id === id);
+  if (!b) return;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-field">
+      <div class="field-item"><label>Guest Name</label><p>${b.fullName || '—'}</p></div>
+      <div class="field-item"><label>Email</label><p>${b.email || '—'}</p></div>
+      <div class="field-item"><label>Phone</label><p>${b.phone || '—'}</p></div>
+      <div class="field-item"><label>Room Type</label><p style="text-transform:capitalize;">${b.roomType || '—'}</p></div>
+      <div class="field-item"><label>Check-in</label><p>${formatDate(b.checkin)}</p></div>
+      <div class="field-item"><label>Check-out</label><p>${formatDate(b.checkout)}</p></div>
+      <div class="field-item"><label>Guests</label><p>${b.guests || '—'}</p></div>
+      <div class="field-item"><label>Total Amount</label><p style="color:var(--gold);font-weight:700;">${formatNaira(b.totalAmount)}</p></div>
+      <div class="field-item"><label>Payment</label><p>${b.paymentStatus || 'pending'}</p></div>
+      <div class="field-item"><label>Status</label><p style="text-transform:capitalize;">${b.status || 'pending'}</p></div>
+    </div>
+    ${b.specialRequests ? `<div class="field-item" style="margin-top:0.5rem;"><label>Special Requests</label><p>${b.specialRequests}</p></div>` : ''}
+    ${b.paymentRef ? `<div class="field-item" style="margin-top:0.5rem;"><label>Payment Reference</label><p style="font-size:0.75rem;">${b.paymentRef}</p></div>` : ''}
+  `;
+
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="btn-confirm-modal" onclick="updateBookingStatus('${b._id}','confirmed');closeModal();">
+      <i class="bi bi-check-circle-fill"></i> Confirm Booking
+    </button>
+    <button class="btn-cancel-modal" onclick="updateBookingStatus('${b._id}','cancelled');closeModal();">
+      <i class="bi bi-x-circle-fill"></i> Cancel Booking
+    </button>
+  `;
+
+  document.getElementById('booking-modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('booking-modal').classList.remove('active');
+}
+
+document.getElementById('booking-modal').addEventListener('click', function (e) {
+  if (e.target === this) closeModal();
+});
+
+// ── Update Booking Status ─────────────────────────────────────
+async function updateBookingStatus(id, status) {
+  try {
+    const data = await apiFetch(`/bookings/${id}`, {
+      method: 'PATCH',
+      body:   JSON.stringify({ status })
+    });
+
+    if (data && data.success) {
+      // Update local array
+      const idx = allBookings.findIndex(b => b._id === id);
+      if (idx > -1) allBookings[idx].status = status;
+      renderBookings(allBookings);
+      loadDashboard();
+      showToast(`Booking ${status} successfully!`, 'success');
+    } else {
+      showToast('Failed to update booking', 'error');
+    }
+  } catch (err) {
+    showToast('Connection error', 'error');
+  }
+}
+
+// ── Load Messages ─────────────────────────────────────────────
+async function loadMessages() {
+  const container = document.getElementById('messages-container');
+  container.innerHTML = `<div class="empty-state"><div class="spinner"></div><p>Loading messages...</p></div>`;
+
+  try {
+    const data = await apiFetch('/contact');
+    if (!data) return;
+
+    const messages = data.messages || [];
+    document.getElementById('msg-badge').textContent = messages.length;
+
+    if (!messages.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="bi bi-chat-dots"></i>
+          <h3>No Messages Yet</h3>
+          <p>Guest contact messages will appear here.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = messages.map(m => `
+      <div class="message-card">
+        <div class="message-header">
+          <div class="message-name">${m.name || '—'}</div>
+          <div class="message-time">${timeAgo(m.createdAt)}</div>
+        </div>
+        <div class="message-subject">${m.subject || 'General Enquiry'}</div>
+        <div class="message-body">${m.message || '—'}</div>
+        <div class="message-contact">
+          <a href="mailto:${m.email}"><i class="bi bi-envelope-fill"></i> ${m.email}</a>
+          ${m.phone ? `<a href="tel:${m.phone}"><i class="bi bi-telephone-fill"></i> ${m.phone}</a>` : ''}
+          ${m.email ? `<a href="https://wa.me/${(m.phone||'').replace(/\D/g,'')}" target="_blank"><i class="bi bi-whatsapp"></i> WhatsApp</a>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    // Search
+    document.getElementById('msg-search').addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('.message-card').forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><i class="bi bi-exclamation-circle"></i><h3>Failed to load</h3><p>Check your connection and try again.</p></div>`;
+  }
+}
+
+// ── Load all data ─────────────────────────────────────────────
+function loadAllData() {
+  loadDashboard();
+  showToast('Data refreshed', 'success');
+}
+
+// ── Logout ────────────────────────────────────────────────────
+function logout() {
+  localStorage.removeItem('galilee_admin_token');
+  localStorage.removeItem('galilee_admin_name');
+  localStorage.removeItem('galilee_admin_email');
+  window.location.href = 'admin-login.html';
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadDashboard();
+</script>
+</body>
+</html>

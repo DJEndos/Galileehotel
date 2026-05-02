@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Room — Galilee Hotel | Reserve Your Stay Online</title>
+  <meta name="description" content="Book your room or suite at Galilee Hotel, Port Harcourt online. Secure payment via Paystack (Naira) and Stripe (International). Instant confirmation." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏨</text></svg>" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://js.paystack.co/v1/inline.js" defer></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://js.stripe.com/v3/" defer></script>
+  <style>
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 3rem;
+      align-items: start;
+    }
+    .booking-form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.07);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .booking-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+    .sidebar-card {
+      background: var(--off-black);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .sidebar-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .price-row.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--gold);
+      border-bottom: none;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .payment-tabs {
+      display: flex;
+      gap: 0;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 1.75rem;
+    }
+    .payment-tab {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.25s ease;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    .payment-tab.active {
+      background: var(--gold);
+      color: var(--white);
+    }
+    .payment-panel { display: none; }
+    .payment-panel.active { display: block; }
+    .security-badges {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .sec-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      color: var(--off-black);
+
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-section-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--off-black);
+      margin: 2rem 0 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+    @media(max-width:960px){
+      .booking-layout { grid-template-columns:1fr; }
+      .booking-sidebar { position:static; }
+    }
+    @media(max-width:580px){ .form-row { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+  <div id="nav-placeholder"></div>
+
+  <div class="page-hero" style="height:360px;">
+    <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1920&q=80');"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <span class="section-label">Reserve Your Stay</span>
+        <h1>Book a <em style="color:var(--gold-light);">Room</em></h1>
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Booking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="booking-layout">
+        <!-- Booking Form -->
+        <div class="booking-form-card fade-left">
+          <form class="booking-form form-light" id="bookingForm" novalidate>
+
+            <div class="form-section-title"> <i class="bi bi-person-standing"></i> Personal Information</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="full-name">Full Name *</label>
+                <input type="text" id="full-name" name="fullname" placeholder="e.g. Chidi Okonkwo" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000" required />
+              </div>
+              <div class="form-group">
+                <label for="nationality">Nationality</label>
+                <input type="text" id="nationality" name="nationality" placeholder="Nigerian" />
+              </div>
+            </div>
+
+            <div class="form-section-title"> <i class="bi bi-ticket-detailed"></i> Stay Details</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="checkin">Check-in Date *</label>
+                <input type="date" id="checkin" name="checkin" required />
+              </div>
+              <div class="form-group">
+                <label for="checkout">Check-out Date *</label>
+                <input type="date" id="checkout" name="checkout" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="guests">Number of Guests *</label>
+                <select id="guests" name="guests" required>
+                  <option value="">Select guests</option>
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="room-type">Room Type *</label>
+                <select id="room-type" name="room" required>
+                  <option value="">Select room type</option>
+                  <option value="standard" data-price="35000">Standard Room — ₦35,000/night</option>
+                  <option value="deluxe" data-price="55000">Deluxe Room — ₦55,000/night</option>
+                  <option value="executive" data-price="95000">Executive Suite — ₦95,000/night</option>
+                  <option value="presidential" data-price="185000">Presidential Suite — ₦185,000/night</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="special-requests">Special Requests</label>
+              <textarea id="special-requests" name="special" placeholder="Any dietary requirements, accessibility needs, room preferences, or special occasions we should know about..."></textarea>
+            </div>
+
+            <div class="form-section-title"><i class="bi bi-credit-card"></i> Payment Method</div>
+            <div class="payment-tabs">
+              <button type="button" class="payment-tab active" data-tab="paystack">🇳🇬 Pay with Paystack</button>
+              <button type="button" class="payment-tab" data-tab="stripe"><i class="bi bi-globe-americas"></i> International (Stripe)</button>
+            </div>
+
+            <!-- Paystack Panel -->
+            <div class="payment-panel active" id="panel-paystack">
+              <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.7;">Pay securely in <strong>Nigerian Naira (₦)</strong> using Paystack — supports debit/credit cards, bank transfers, USSD, and mobile money.</p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+                <img src="https://logos-world.net/wp-content/uploads/2021/08/Paystack-Symbol.png" alt="Paystack" style="height:32px;object-fit:contain;" loading="lazy" />
+                <span style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:0.3rem;"> <i class="bi bi-lock"></i> 256-bit SSL encrypted</span>
+              </div>
+              <button type="submit" class="btn btn-gold btn-lg" style="width:100%;justify-content:center;" id="paystack-btn">
+                <i class="bi bi-shield-lock"></i> Pay Securely via Paystack →
+              </button>
+            </div>
+
+            <!-- Stripe Panel -->
+            <div class="payment-panel" id="panel-stripe">
+              <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.7;">Pay in <strong>USD, GBP, EUR</strong>, or other international currencies using Stripe — supports all major international credit/debit cards.</p>
+              <div class="form-row" style="margin-bottom:1.25rem;">
+                <div class="form-group">
+                  <label for="stripe-currency">Currency</label>
+                  <select id="stripe-currency" name="currency">
+                    <option value="usd">USD — US Dollar</option>
+                    <option value="gbp">GBP — British Pound</option>
+                    <option value="eur">EUR — Euro</option>
+                    <option value="cad">CAD — Canadian Dollar</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Approximate Amount</label>
+                  <input type="text" id="stripe-amount-display" readonly placeholder="Select room & dates" style="background:#f5f3f0;cursor:default;" />
+                </div>
+              </div>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+                <span style="font-size:0.78rem;color:var(--text-muted);"><i class="bi bi-credit-card-2"></i> Visa &nbsp; Mastercard &nbsp; Amex &nbsp; Discover</span>
+              </div>
+              <button type="submit" class="btn btn-dark btn-lg" style="width:100%;justify-content:center;background:#635BFF;" id="stripe-btn">
+                <i class="bi bi-shield-lock"></i> Pay Securely via Stripe →
+              </button>
+            </div>
+
+            <div class="security-badges" style="margin-top:1.5rem;">
+              <span class="sec-badge"> <i class="bi bi-lock" style="color: var(--gold); "></i> SSL Secured</span>
+              <span class="sec-badge"><i class="bi bi-check-circle" style="color: var(--gold);"></i> PCI Compliant</span>
+              <span class="sec-badge"><i class="bi bi-x-circle" style="color: var(--gold);" ></i>  Free Cancellation (48hr)</span>
+              <span class="sec-badge"><i class="bi bi-phone" style="color: var(--gold);"></i> 24/7 Support</span>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="booking-sidebar fade-right">
+          <div class="sidebar-card">
+            <h3><i class="bi bi-file-medical"></i> Booking Summary</h3>
+            <div class="price-row">
+              <span>Room Type</span>
+              <span id="summary-room" style="color:var(--gold);">—</span>
+            </div>
+            <div class="price-row">
+              <span>Check-in</span>
+              <span id="summary-checkin">—</span>
+            </div>
+            <div class="price-row">
+              <span>Check-out</span>
+              <span id="summary-checkout">—</span>
+            </div>
+            <div class="price-row">
+              <span>Nights</span>
+              <span id="summary-nights">—</span>
+            </div>
+            <div class="price-row">
+              <span>Guests</span>
+              <span id="summary-guests">—</span>
+            </div>
+            <div class="price-row total">
+              <span>Total (₦)</span>
+              <span id="summary-total">—</span>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3><i class="bi bi-buildings"></i> Hotel Contact</h3>
+            <div style="display:flex;flex-direction:column;gap:0.85rem;">
+              <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);display:flex;gap:0.6rem;">
+                <span style="color:var(--gold);"><i class="bi bi-pin-map"></i></span>
+                <span>65 Old Refinery Road, Elelenwo, Port Harcourt.</span>
+              </div>
+              <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);display:flex;gap:0.6rem;">
+                <span style="color:var(--gold);"><i class="bi bi-telephone-inbound"></i></span>
+                <a href="tel:+2348000000000" style="color:var(--gold);">+234 8119706518</a>
+              </div>
+              <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);display:flex;gap:0.6rem;">
+                <span style="color:var(--gold);"><i class="bi bi-envelope-arrow-down"></i></span>
+                <a href="mailto:info@galileehotel.com" style="color:rgba(255,255,255,0.5);">info@galileehotel.com</a>
+              </div>
+              <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);display:flex;gap:0.6rem;">
+                <span style="color:var(--gold);"><i class="bi bi-clock"></i></span>
+                <span>Daily: 06:00 AM – 11:45 PM</span>
+              </div>
+            </div>
+            <a href="https://wa.me/2348000000000?text=I%20want%20to%20book%20a%20room%20at%20Galilee%20Hotel"
+               class="btn btn-green" style="width:100%;justify-content:center;margin-top:1.25rem; color: var(--white);" target="_blank">
+              <i class="bi bi-whatsapp"></i> Book via WhatsApp
+            </a>
+          </div>
+
+          <div class="sidebar-card">
+            <h3><i class="bi bi-check-circle" style="color: var(--gold);"></i> Booking Policies</h3>
+            <ul style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.9;padding-left:0.25rem;">
+              <li>✔ Check-in from 2:00 PM</li>
+              <li>✔ Check-out by 12:00 PM</li>
+              <li>✔ Free cancellation within 48 hours</li>
+              <li>✔ Children under 5 stay free</li>
+              <li>✔ Pets allowed on request</li>
+              <li>✔ ID required at check-in</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+  <div id="widgets-placeholder"></div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/main.js"></script>
+  
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+// ── Configuration ─────────────────────────────────────────
+const PAYSTACK_PUBLIC_KEY = 'pk_live_7c136d5f6c5461d5395af681ac24666c2f41d3e7'; // 
+const API_BASE = 'https://galileehotel.onrender.com'; // 
+
+// const Reservation = require('./models/Reservation');
+
+// Inside your Paystack webhook success handler:
+async function createReservationAfterPayment(paymentData) {
+  const reservationId = `GLH-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`;
+
+  const reservation = new Reservation({
+    reservationId,
+    guest: paymentData.customerName,
+    email: paymentData.customerEmail,
+    phone: paymentData.customerPhone,
+    room: paymentData.roomName,
+    checkIn: paymentData.checkIn,
+    checkOut: paymentData.checkOut,
+    nights: paymentData.nights,
+    amount: `₦${Number(paymentData.amount / 100).toLocaleString()}`,
+    status: 'confirmed',  // Auto-confirm after successful payment
+  });
+
+  await reservation.save();
+
+  // Send reservationId to guest via email or SMS here
+  console.log(`Reservation created: ${reservationId}`);
+  return reservation;
+}
+
+const ROOM_PRICES = {
+  standard:     35000,
+  deluxe:       55000,
+  executive:    95000,
+  presidential: 185000
+};
+
+const EXCHANGE = {
+  usd: 1550,
+  gbp: 1980,
+  eur: 1680,
+  cad: 1140
+};
+
+// ── Update booking summary sidebar ────────────────────────
+function updateSummary() {
+  const room     = document.getElementById('room-type').value;
+  const checkin  = new Date(document.getElementById('checkin').value);
+  const checkout = new Date(document.getElementById('checkout').value);
+  const guests   = document.getElementById('guests').value;
+  const price    = ROOM_PRICES[room] || 0;
+
+  document.getElementById('summary-room').textContent =
+    room ? room.charAt(0).toUpperCase() + room.slice(1) + ' Room/Suite' : '—';
+  document.getElementById('summary-guests').textContent =
+    guests ? guests + ' Guest(s)' : '—';
+
+  if (!isNaN(checkin) && !isNaN(checkout) && checkout > checkin) {
+    const nights = Math.round((checkout - checkin) / 86400000);
+    const total  = nights * price;
+
+    document.getElementById('summary-checkin').textContent =
+      checkin.toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('summary-checkout').textContent =
+      checkout.toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('summary-nights').textContent = nights + ' night(s)';
+    document.getElementById('summary-total').textContent =
+      price ? '₦' + total.toLocaleString('en-NG') : '—';
+
+    // Update Stripe currency display
+    const curr   = document.getElementById('stripe-currency').value;
+    const rate   = EXCHANGE[curr] || 1550;
+    const foreign = (total / rate).toFixed(2);
+    const symbols = { usd: '$', gbp: '£', eur: '€', cad: 'CA$' };
+    document.getElementById('stripe-amount-display').value =
+      price ? `${symbols[curr] || ''}${foreign} ${curr.toUpperCase()}` : '';
+  } else {
+    ['summary-checkin','summary-checkout','summary-nights','summary-total'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+  }
+}
+
+// ── Listen for form field changes ─────────────────────────
+['room-type','checkin','checkout','guests','stripe-currency'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', updateSummary);
+});
+
+// ── Auto-select room from URL param ──────────────────────
+const urlParams = new URLSearchParams(window.location.search);
+const roomParam = urlParams.get('room');
+if (roomParam) {
+  const sel = document.getElementById('room-type');
+  if (sel) { sel.value = roomParam; updateSummary(); }
+}
+
+// ── Set minimum dates ─────────────────────────────────────
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('checkin').min  = today;
+document.getElementById('checkout').min = today;
+document.getElementById('checkin').addEventListener('change', function () {
+  document.getElementById('checkout').min = this.value;
+});
+
+// ── Payment tabs ──────────────────────────────────────────
+document.querySelectorAll('.payment-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.payment-tab, .payment-panel').forEach(el => {
+      el.classList.remove('active');
+    });
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Validate form ─────────────────────────────────────────
+function validateForm() {
+  const name     = document.getElementById('full-name').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+  const room     = document.getElementById('room-type').value;
+  const checkin  = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+  const guests   = document.getElementById('guests').value;
+
+  if (!name || !email || !phone || !room || !checkin || !checkout || !guests) {
+    alert('Please fill in all required fields.');
+    return false;
+  }
+
+  const checkinDate  = new Date(checkin);
+  const checkoutDate = new Date(checkout);
+  const nights = Math.round((checkoutDate - checkinDate) / 86400000);
+
+  if (isNaN(nights) || nights <= 0) {
+    alert('Check-out date must be after check-in date.');
+    return false;
+  }
+
+  return true;
+}
+
+// ── Show confirmation modal ───────────────────────────────
+function showConfirmation() {
+  const modal = document.querySelector('.modal-overlay');
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// ── Save booking to backend ───────────────────────────────
+async function saveBooking(paymentRef, paymentMethod) {
+  try {
+    const checkin  = document.getElementById('checkin').value;
+    const checkout = document.getElementById('checkout').value;
+    const room     = document.getElementById('room-type').value;
+    const nights   = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+    const total    = nights * (ROOM_PRICES[room] || 0);
+
+    await fetch(`${API_BASE}/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName:        document.getElementById('full-name').value,
+        email:           document.getElementById('email').value,
+        phone:           document.getElementById('phone').value,
+        checkin,
+        checkout,
+        guests:          document.getElementById('guests').value,
+        roomType:        room,
+        specialRequests: document.getElementById('special-requests').value,
+        totalAmount:     total,
+        paymentMethod,
+        paymentStatus:   'paid',
+        paymentRef
+      })
+    });
+  } catch (err) {
+    console.error('Failed to save booking:', err);
+  }
+}
+
+// ── Paystack payment ──────────────────────────────────────
+function payWithPaystack() {
+  const email    = document.getElementById('email').value.trim();
+  const name     = document.getElementById('full-name').value.trim();
+  const room     = document.getElementById('room-type').value;
+  const checkin  = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+  const guests   = document.getElementById('guests').value;
+  const nights   = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+  const total    = nights * (ROOM_PRICES[room] || 0);
+
+  const handler = PaystackPop.setup({
+    key:      PAYSTACK_PUBLIC_KEY,
+    email:    email,
+    amount:   total * 100, // Paystack uses kobo
+    currency: 'NGN',
+    ref:      'GALILEE_' + Date.now(),
+    metadata: {
+      custom_fields: [
+        { display_name: 'Guest Name',  variable_name: 'guest_name',  value: name },
+        { display_name: 'Room Type',   variable_name: 'room_type',   value: room },
+        { display_name: 'Check-in',    variable_name: 'checkin',     value: checkin },
+        { display_name: 'Check-out',   variable_name: 'checkout',    value: checkout },
+        { display_name: 'Nights',      variable_name: 'nights',      value: nights },
+        { display_name: 'Guests',      variable_name: 'guests',      value: guests }
+      ]
+    },
+    callback: function (response) {
+      // Payment successful
+      saveBooking(response.reference, 'paystack');
+      showConfirmation();
+    },
+    onClose: function () {
+      // User closed payment popup — do nothing
+    }
+  });
+
+  handler.openIframe();
+}
+
+// ── Form submit handler ───────────────────────────────────
+document.getElementById('bookingForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  const activeTab = document.querySelector('.payment-tab.active')?.dataset.tab;
+
+  if (activeTab === 'paystack') {
+    payWithPaystack();
+  } else {
+    // Stripe — show confirmation for now
+    // Replace this with your Stripe Payment Intent when ready
+    saveBooking('STRIPE_PENDING_' + Date.now(), 'stripe');
+    showConfirmation();
+  }
+});
+
+
+</script>
+</body>
+</html>
