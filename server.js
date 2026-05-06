@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Galilee Hotel API is running ✅' });
+  res.json({ "message": 'Galilee Hotel API is running ✅' });
 });
 
 app.use('/api/auth',     require('./routes/auth'));
