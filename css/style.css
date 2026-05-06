@@ -182,9 +182,10 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
   backdrop-filter: blur(20px);
   box-shadow: 0 2px 30px rgba(0,0,0,0.4);
 }
-.navbar.transparent
- {background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; }
+.navbar.transparent{
+  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; }
 .navbar-inner {
+  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; }
   display: flex;
   align-items: center;
   justify-content: space-between;
