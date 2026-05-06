@@ -168,7 +168,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
 
 /* ── Navigation ── */
 .navbar {
-  position: fixed;
+  
   top: 0; left: 0; right: 0;
   z-index: 1000;
   height: var(--nav-height);
@@ -193,7 +193,6 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
   max-width: 1260px;
   margin: 0 auto;
   padding: 0 1rem;
-  position: fixed;
 }
 .nav-logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; }
 .nav-logo .logo-icon {
