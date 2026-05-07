@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || 'https://galileehotel.netlify.app/' }));
+app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -35,3 +35,11 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 console.log("Server starting...");
+
+const cors = require("cors");
+
+app.use(cors({
+  origin: "https://galileehote.netlify.app",
+  credentials: true
+}));
+
