@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors     = require('cors');//
+const cors     = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -41,7 +41,7 @@ mongoose.connect(process.env.MONGO_URI)
   });
 console.log("Server starting...");
 
-const cors = require("cors");
+// const cors = require("cors");
 
 app.use(cors({
   origin: "https://galileehote.netlify.app",
