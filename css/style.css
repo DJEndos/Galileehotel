@@ -161,6 +161,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
 .btn-green {
   background: #25D366;
   color: var(--white);
+  border: 20px solid #25D366 ;
 }
 .btn-green:hover { background: #20bf5a; transform: translateY(-2px); }
 .btn-sm { padding: 0.6rem 1.5rem; font-size: 0.75rem; }
@@ -183,16 +184,24 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
   box-shadow: 0 2px 30px rgba(0,0,0,0.4);
 }
 .navbar.transparent{
-  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; }
-.navbar-inner {
-  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; 
-  display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   max-width: 1260px;
   margin: 0 auto;
   padding: 0 1rem;
+  position: fixed;
+  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover; 
+}
+.navbar-inner {
+  /* background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover;  */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
   position: fixed;
   top: 1rem;
 }
@@ -1036,8 +1045,13 @@ footer {
   display: flex; align-items: center; gap: 0.5rem;
   font-size: 0.82rem; color: rgba(255,255,255,0.5);
 }
-.breadcrumb a { color: var(--gold); }
-.breadcrumb-sep { color: rgba(255,255,255,0.3); }
+.breadcrumb a { color: var(--gold); 
+  text-decoration: none;
+  font-size: 17px;
+}
+.breadcrumb-sep { color: rgba(255,255,255,0.3); 
+  font-size: 17px;
+}
 
 /* ── About Page ── */
 .about-split {
@@ -1206,8 +1220,14 @@ footer {
 .mb-2 { margin-bottom: 2rem; }
 
 /* ── Responsive ── */
+@media (min-width: 1024px){
+  .navbar.transparent{
+ width: 200%;
+  }
+}
 @media (max-width: 1024px) {
-  .navbar{background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover;}
+  .navbar{background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85'); background-size: cover;
+  }
   .nav-cta .btn{ height: 40px; border-radius: 8px; display: flex;                      }
   .container { padding: 0 1.20rem; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }

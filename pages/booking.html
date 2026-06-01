@@ -81,7 +81,6 @@
       font-family: var(--font-body);
       font-size: 0.82rem;
       font-weight: 600;
-      color: rgba(255,255,255,0.5);
       transition: all 0.25s ease;
       text-align: center;
       letter-spacing: 0.05em;
@@ -156,17 +155,17 @@
             <div class="form-section-title"> <i class="bi bi-person-standing"></i> Personal Information</div>
             <div class="form-row">
               <div class="form-group">
-                <label for="full-name">Full Name *</label>
-                <input type="text" id="full-name" name="fullname" placeholder="e.g. Chidi Okonkwo" required />
+                <label for="full-name">Full Name </label>
+                <input type="text" id="full-name" name="fullname" placeholder="Enter your full name" required />
               </div>
               <div class="form-group">
-                <label for="email">Email Address *</label>
+                <label for="email">Email Address </label>
                 <input type="email" id="email" name="email" placeholder="you@example.com" required />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label for="phone">Phone Number *</label>
+                <label for="phone">Phone Number </label>
                 <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000" required />
               </div>
               <div class="form-group">
@@ -178,17 +177,17 @@
             <div class="form-section-title"> <i class="bi bi-ticket-detailed"></i> Stay Details</div>
             <div class="form-row">
               <div class="form-group">
-                <label for="checkin">Check-in Date *</label>
+                <label for="checkin">Check-in Date </label>
                 <input type="date" id="checkin" name="checkin" required />
               </div>
               <div class="form-group">
-                <label for="checkout">Check-out Date *</label>
+                <label for="checkout">Check-out Date </label>
                 <input type="date" id="checkout" name="checkout" required />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label for="guests">Number of Guests *</label>
+                <label for="guests">Number of Guests </label>
                 <select id="guests" name="guests" required>
                   <option value="">Select guests</option>
                   <option value="1">1 Guest</option>
@@ -201,7 +200,7 @@
                 <label for="room-type">Room Type *</label>
                 <select id="room-type" name="room" required>
                   <option value="">Select room type</option>
-                  <option value="standard" data-price="35000">Standard Room — 35,000/night</option>
+                  <option value="standard" data-price="35000">Standard Room — 1,000/night</option>
                   <option value="deluxe" data-price="55000">Deluxe Room — ₦55,000/night</option>
                   <option value="executive" data-price="95000">Executive Suite — ₦95,000/night</option>
                   <option value="presidential" data-price="185000">Presidential Suite — ₦185,000/night</option>
@@ -223,7 +222,6 @@
             <div class="payment-panel active" id="panel-paystack">
               <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.7;">Pay securely in <strong>Nigerian Naira (₦)</strong> using Paystack — supports debit/credit cards, bank transfers, USSD, and mobile money.</p>
               <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
-                <img src="https://logos-world.net/wp-content/uploads/2021/08/Paystack-Symbol.png" alt="Paystack" style="height:32px;object-fit:contain;" loading="lazy" />
                 <span style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:0.3rem;"> <i class="bi bi-lock"></i> 256-bit SSL encrypted</span>
               </div>
               <button type="submit" class="btn btn-gold btn-lg" style="width:100%;justify-content:center;" id="paystack-btn">

@@ -13,13 +13,6 @@ module.exports = (req, res, next) => {
   }
 };
 
-// ============================================================
-//   GALILEE HOTEL — Auth Middleware (middleware/auth.js)
-//   Protects admin routes — attach to any route that
-//   should only be accessible by logged-in admin
-// ============================================================
-
-
 
 module.exports = function requireAuth(req, res, next) {
   // Get token from Authorization header
