@@ -44,7 +44,7 @@ console.log("Server starting...");
 // const cors = require("cors");
 
 app.use(cors({
-  origin: "https://galileehote.netlify.app",
+  origin: "https://galileehotel.vercel.app",
   credentials: true
 }));
 
