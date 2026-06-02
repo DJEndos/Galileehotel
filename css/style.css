@@ -187,6 +187,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); line-height: 1.2; }
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  border-bottom: 2px solid var(--gold-light);
   /* max-width: 1260px; */
   margin: 0 auto;
   padding: 0 1rem;
