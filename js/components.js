@@ -52,7 +52,7 @@ const NAV_HOME_HTML = `
       <li><a href="pages/rooms.html">Rooms &amp; Suites</a></li>
       <li><a href="pages/services.html">Services</a></li>
       <li><a href="pages/contact.html">Contact</a></li>
-      <li><a href="/admin-login.html">Dashboard</a></li>
+      
     </ul>
     <div class="nav-cta">
       <a href="pages/booking.html" class="btn btn-gold btn-sm">Book Now</a>
